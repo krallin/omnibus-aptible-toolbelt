@@ -4,9 +4,3 @@ source 'https://rubygems.org'
 # ideal caching.
 gem 'omnibus', '5.4.0'
 gem 'omnibus-software', github: 'opscode/omnibus-software'
-
-group :development do
-  gem 'berkshelf'
-  gem 'test-kitchen'
-  gem 'kitchen-vagrant'
-end
