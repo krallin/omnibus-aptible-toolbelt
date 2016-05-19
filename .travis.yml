@@ -31,15 +31,20 @@ matrix:
 script:
   - rm -f pkg/*
   - "buildscripts/${BUILD_ENGINE}.sh"
-  - ls pkg/*
+  - mkdir -p "deploy/${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}/"
+  - sudo chown -R "$USER" pkg
+  - mv pkg "deploy/${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}/pkg"
+  - ls -lah "deploy/${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}/pkg"
 deploy:
-  provider: releases
   skip_cleanup: true
-  file_glob: true
-  file:
-    - pkg/aptible-toolbelt-*
+  provider: s3
+  bucket: omnibus-aptible-toolbelt
+  acl: public_read
+  local_dir: deploy
+  access_key_id:
+    secure: "1hv0aBsaJmK4pmT4sZcDesLvFz7A9u887UqdY9M/gg5HQ4wnHkQYbVeuxY8tH7xTMsIJAIjAxJX1yToG9xQo6chkpTtIKUTzQE0evbyErI3OG1ISUdkouzkd2mM0whrqiuhKKR+yZiIwER7EhXXSciQQutyoH/vKzTEa1de1T8UOq0Kv7H0WaGMzR46ipK3USrV8ZlXwc/z0KxFDTFHX9buZB72RowIBzyKVRqMfS3PxukZUQ/a/4SWMD2K2rNam9yoTHlK91Nt4SaQ1QboCVm7C9kzZWJck/y5txD3vDghXMXoazZYkQqTRJTs4U10pNTfcKdYpDn/6Ulm+T1HFEsQBdfXhZKMhVZHAbI8F35J5MJ+zxte61iBvFat48BUN8DamDTt8sAaH/xlPimfSQSAE28JJQ4LZjqs8rGConPiDO27rtSjsX9aBdtEiRhdZmC6kNueJ6078kXVo5jaNgc6lRGPvGVg0MulceeQYA4cVdMHSlUOKMrC8p9ahc1sbPFRU4/kRdrSKnCUUmegP/BiQMnr4gtHftk9k7mj06G4oiBYfWv4EcZqI/GpLybOqAZEicPbSDunhKeAkxhZSfQABBO6ErGeB1GyZHT3n7vzZcF48CaQlZnR16hHdnrX4UQP1o3DZFnpkWyd2Uu8USmQ78eOaLgiH6+IsIphbmFQ="
+  secret_access_key:
+    secure: "ZVhq489l/7mzUymPjTs+Lt0gc7EIuk/DTywwuOitaosQ54C4Tu3sOieR5laRjvlaOVBP8HmY49vzyHqyiQ5eV/jOrZYFg+wa6cwgwnYiKo42wmRan2C/lHIqQK9l+8j6G6rJtaR2dIrEDWJLW2adEPzOwlz2GJmwuYWLAO+yqkFVoxHN7I07+lShcyUeqFM9d2Wm2mvXTOY7jPrNtDZ92Lo9smPS4xRkmQWz5K120EdtFvAK8ePZr3sRkDCxBJM0EVjZOsUPxWfeiKfJEE6FMXqMyVxLiQju8tWjxuazBLEnOYi7x1ebgVrwZ4U77BHGmxxyeGK2W71tg8uzb7fbJWHowNVG6imyUQUQZhcSkVzac79dB+1VYH1DWCBtf11xloIxMFqd6THQrYm71ku0M4r5lsSeVLig+tH5LyCO8YWcChrTxqDokicNV2AVTJKTNerWmtLs/uXB6nb5fS6pukLfeu80ojkop84xN/0RgKYgs4xKNbgRRklnJG6I9c2xrSyqkSf4SIbaorhcXXzifVt90rcGZqD78348DpIK19nP/qdoyOm0wCKW2aYAgU83DmDx1R0EDHe+Ray21Zm+mpas2ydEARor9ahBBSWs12SbxwTbzVvY6evAhf98Z/VP7ODU/ukbrhgspZS5MDMA7jBeCLZ96GUnG54PbN4e6T0="
   on:
     repo: aptible/omnibus-aptible-toolbelt
-    tags: true
-  api_key:
-    secure: "B4rQ5wCpkPqH/1xc2mKJcWhlj9QIxKLtSy6jjMB+gC+RZR1xEsFpby6JC+yk+XcIz7KhZSYTwPGkBtGMpiUZBF8D8iNlFB3xHos2b65invWmiur+KBnXXN10+wSsTUaV9Yv8BbNKZaX6mGv+n9oP0Hbb4TsclpKML3hWkrtaUaVnvrT60PjghkoGugNog6My6HXWRrPgq0USq4aFtmEudIix8mm2v6RvTaV6t+jCm65xfruLxjADVww0ipnlthQJhmNWd9xD5uF2bUtsAnyPYDd/1PH8aNeBDY2l8G7l46zYqNNMR6sCQNfcdxUUrgO0GYSbFuacOrGp+b0sru6zRPrCZodJwCkcpp+iNJryNdtbresM2gh+88nuBF50Nc5KI2lWJNq05weFcRITefU8oUd+MdXfH5TnWknSDclyunzJEo47FnG2HPpioPvUk+Lfq6s68zLeb1Qy5NRC0WzHeFDRtJ2ur1pkxdAio0ZCEH8zMCKGKjOXBdZxgqmXTPpK17nBLtMGkYnRk1sXeMC1rbIH22FB8fiV6/WJEEyEZAg/ylW5wMTXp0sp52CI5RJovwBA/UGQc4OGyB1Lup6MLYSc5NBIpqUUY0hW0DWNG6URUsgKL8TnhUHDdug7NBK2TPkiL3iM1poXjgRzoFF6w1KVfaBKJ1iNPdahEw7e1So="
+    all_branches: true
