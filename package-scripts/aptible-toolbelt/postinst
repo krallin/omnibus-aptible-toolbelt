@@ -1,0 +1,18 @@
+#!/bin/sh
+PROGNAME=`basename $0`
+INSTALL_BIN_DIR="/opt/aptible-toolbelt/bin"
+LINK_BIN_DIR="/usr/local/bin"
+
+error_exit()
+{
+  echo "${PROGNAME}: ${1:-"Unknown Error"}" 1>&2
+  exit 1
+}
+
+for bin in "aptible"; do
+  ln -sf "$INSTALL_BIN_DIR/$bin" "$LINK_BIN_DIR" || error_exit "Cannot link $bin in $LINK_BIN_DIR"
+done
+
+echo "Thank you for installing aptible-toolbelt!"
+
+exit 0

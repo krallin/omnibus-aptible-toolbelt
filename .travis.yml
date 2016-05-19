@@ -1,0 +1,45 @@
+sudo: true
+language: ruby
+install: true
+cache:
+  - bundler
+  - directories:
+    - .local/cache
+matrix:
+  include:
+    - os: osx
+      env:
+        - BUILD_ENGINE=native
+    - os: linux
+      env:
+        - BUILD_ENGINE=docker
+        - DOCKER_TAG=ubuntu-1404
+      services:
+        - docker
+    - os: linux
+      env:
+        - BUILD_ENGINE=docker
+        - DOCKER_TAG=debian-8
+      services:
+        - docker
+    - os: linux
+      env:
+        - BUILD_ENGINE=docker
+        - DOCKER_TAG=centos-7
+      services:
+        - docker
+script:
+  - rm -f pkg/*
+  - "buildscripts/${BUILD_ENGINE}.sh"
+  - ls pkg/*
+deploy:
+  provider: releases
+  skip_cleanup: true
+  file_glob: true
+  file:
+    - pkg/aptible-toolbelt-*
+  on:
+    repo: aptible/omnibus-aptible-toolbelt
+    tags: true
+  api_key:
+    secure: "B4rQ5wCpkPqH/1xc2mKJcWhlj9QIxKLtSy6jjMB+gC+RZR1xEsFpby6JC+yk+XcIz7KhZSYTwPGkBtGMpiUZBF8D8iNlFB3xHos2b65invWmiur+KBnXXN10+wSsTUaV9Yv8BbNKZaX6mGv+n9oP0Hbb4TsclpKML3hWkrtaUaVnvrT60PjghkoGugNog6My6HXWRrPgq0USq4aFtmEudIix8mm2v6RvTaV6t+jCm65xfruLxjADVww0ipnlthQJhmNWd9xD5uF2bUtsAnyPYDd/1PH8aNeBDY2l8G7l46zYqNNMR6sCQNfcdxUUrgO0GYSbFuacOrGp+b0sru6zRPrCZodJwCkcpp+iNJryNdtbresM2gh+88nuBF50Nc5KI2lWJNq05weFcRITefU8oUd+MdXfH5TnWknSDclyunzJEo47FnG2HPpioPvUk+Lfq6s68zLeb1Qy5NRC0WzHeFDRtJ2ur1pkxdAio0ZCEH8zMCKGKjOXBdZxgqmXTPpK17nBLtMGkYnRk1sXeMC1rbIH22FB8fiV6/WJEEyEZAg/ylW5wMTXp0sp52CI5RJovwBA/UGQc4OGyB1Lup6MLYSc5NBIpqUUY0hW0DWNG6URUsgKL8TnhUHDdug7NBK2TPkiL3iM1poXjgRzoFF6w1KVfaBKJ1iNPdahEw7e1So="
