@@ -1,0 +1,50 @@
+sudo: true
+language: ruby
+install: true
+cache:
+  - bundler
+  - directories:
+    - .local/cache
+matrix:
+  include:
+    - os: osx
+      env:
+        - BUILD_ENGINE=native
+    - os: linux
+      env:
+        - BUILD_ENGINE=docker
+        - DOCKER_TAG=ubuntu-1404
+      services:
+        - docker
+    - os: linux
+      env:
+        - BUILD_ENGINE=docker
+        - DOCKER_TAG=debian-8
+      services:
+        - docker
+    - os: linux
+      env:
+        - BUILD_ENGINE=docker
+        - DOCKER_TAG=centos-7
+      services:
+        - docker
+script:
+  - rm -f pkg/*
+  - "buildscripts/${BUILD_ENGINE}.sh"
+  - mkdir -p "deploy/${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}/"
+  - sudo chown -R "$USER" pkg
+  - mv pkg "deploy/${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}/pkg"
+  - ls -lah "deploy/${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}/pkg"
+deploy:
+  skip_cleanup: true
+  provider: s3
+  bucket: omnibus-aptible-toolbelt
+  acl: public_read
+  local_dir: deploy
+  access_key_id:
+    secure: "1hv0aBsaJmK4pmT4sZcDesLvFz7A9u887UqdY9M/gg5HQ4wnHkQYbVeuxY8tH7xTMsIJAIjAxJX1yToG9xQo6chkpTtIKUTzQE0evbyErI3OG1ISUdkouzkd2mM0whrqiuhKKR+yZiIwER7EhXXSciQQutyoH/vKzTEa1de1T8UOq0Kv7H0WaGMzR46ipK3USrV8ZlXwc/z0KxFDTFHX9buZB72RowIBzyKVRqMfS3PxukZUQ/a/4SWMD2K2rNam9yoTHlK91Nt4SaQ1QboCVm7C9kzZWJck/y5txD3vDghXMXoazZYkQqTRJTs4U10pNTfcKdYpDn/6Ulm+T1HFEsQBdfXhZKMhVZHAbI8F35J5MJ+zxte61iBvFat48BUN8DamDTt8sAaH/xlPimfSQSAE28JJQ4LZjqs8rGConPiDO27rtSjsX9aBdtEiRhdZmC6kNueJ6078kXVo5jaNgc6lRGPvGVg0MulceeQYA4cVdMHSlUOKMrC8p9ahc1sbPFRU4/kRdrSKnCUUmegP/BiQMnr4gtHftk9k7mj06G4oiBYfWv4EcZqI/GpLybOqAZEicPbSDunhKeAkxhZSfQABBO6ErGeB1GyZHT3n7vzZcF48CaQlZnR16hHdnrX4UQP1o3DZFnpkWyd2Uu8USmQ78eOaLgiH6+IsIphbmFQ="
+  secret_access_key:
+    secure: "ZVhq489l/7mzUymPjTs+Lt0gc7EIuk/DTywwuOitaosQ54C4Tu3sOieR5laRjvlaOVBP8HmY49vzyHqyiQ5eV/jOrZYFg+wa6cwgwnYiKo42wmRan2C/lHIqQK9l+8j6G6rJtaR2dIrEDWJLW2adEPzOwlz2GJmwuYWLAO+yqkFVoxHN7I07+lShcyUeqFM9d2Wm2mvXTOY7jPrNtDZ92Lo9smPS4xRkmQWz5K120EdtFvAK8ePZr3sRkDCxBJM0EVjZOsUPxWfeiKfJEE6FMXqMyVxLiQju8tWjxuazBLEnOYi7x1ebgVrwZ4U77BHGmxxyeGK2W71tg8uzb7fbJWHowNVG6imyUQUQZhcSkVzac79dB+1VYH1DWCBtf11xloIxMFqd6THQrYm71ku0M4r5lsSeVLig+tH5LyCO8YWcChrTxqDokicNV2AVTJKTNerWmtLs/uXB6nb5fS6pukLfeu80ojkop84xN/0RgKYgs4xKNbgRRklnJG6I9c2xrSyqkSf4SIbaorhcXXzifVt90rcGZqD78348DpIK19nP/qdoyOm0wCKW2aYAgU83DmDx1R0EDHe+Ray21Zm+mpas2ydEARor9ahBBSWs12SbxwTbzVvY6evAhf98Z/VP7ODU/ukbrhgspZS5MDMA7jBeCLZ96GUnG54PbN4e6T0="
+  on:
+    repo: aptible/omnibus-aptible-toolbelt
+    all_branches: true

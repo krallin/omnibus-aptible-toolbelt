@@ -1,0 +1,15 @@
+#!/bin/sh
+#
+# Perform necessary aptible-cli removal steps
+# after package is uninstalled.
+#
+
+echo "aptible-cli has been uninstalled!"
+
+LINK_BIN_DIR="/usr/local/bin"
+
+for bin in "aptible"; do
+  rm -f "$LINK_BIN_DIR/$bin"
+done
+
+exit 0
