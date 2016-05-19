@@ -19,7 +19,25 @@ matrix:
     - os: linux
       env:
         - BUILD_ENGINE=docker
+        - DOCKER_TAG=ubuntu-1604
+      services:
+        - docker
+    - os: linux
+      env:
+        - BUILD_ENGINE=docker
+        - DOCKER_TAG=debian-7
+      services:
+        - docker
+    - os: linux
+      env:
+        - BUILD_ENGINE=docker
         - DOCKER_TAG=debian-8
+      services:
+        - docker
+    - os: linux
+      env:
+        - BUILD_ENGINE=docker
+        - DOCKER_TAG=centos-6
       services:
         - docker
     - os: linux
