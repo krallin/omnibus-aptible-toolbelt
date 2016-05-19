@@ -1,3 +1,5 @@
+require_relative './../../util/version.rb'
+
 name 'aptible-toolbelt'
 maintainer 'Thomas Orozco <thomas@aptible.com>'
 homepage 'https://www.aptible.com'
@@ -6,7 +8,11 @@ license_file 'LICENSE.md'
 
 install_dir "#{default_root}/#{name}"
 
-build_version Omnibus::BuildVersion.semver
+build_version do
+  source :git, from_dependency: 'aptible-cli'
+  output_format :semver_with_platform
+end
+
 build_iteration 1
 
 # Creates required build directories
