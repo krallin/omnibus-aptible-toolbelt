@@ -31,10 +31,10 @@ matrix:
 script:
   - rm -f pkg/*
   - "buildscripts/${BUILD_ENGINE}.sh"
-  - mkdir -p "deploy/${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}/"
+  - mkdir -p "deploy/${TRAVIS_REPO_SLUG}/${TRAVIS_BUILD_NUMBER}/"
   - sudo chown -R "$USER" pkg
-  - mv pkg "deploy/${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}/pkg"
-  - ls -lah "deploy/${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}/pkg"
+  - mv pkg "deploy/${TRAVIS_REPO_SLUG}/${TRAVIS_BUILD_NUMBER}/pkg"
+  - ls -lah "deploy/${TRAVIS_REPO_SLUG}/${TRAVIS_BUILD_NUMBER}/pkg"
 deploy:
   skip_cleanup: true
   provider: s3
