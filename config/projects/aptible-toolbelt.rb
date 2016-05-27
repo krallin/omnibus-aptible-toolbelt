@@ -30,4 +30,5 @@ exclude '**/bundler/git'
 
 package :pkg do
   identifier 'com.aptible.toolbelt'
+  signing_identity 'Developer ID Installer: Chas Ballew (79J6PXK4K8)'
 end
