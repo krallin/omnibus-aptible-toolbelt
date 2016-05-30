@@ -1,4 +1,5 @@
 require_relative './../../util/version.rb'
+require_relative './../../util/clean_software.rb'
 
 name 'aptible-toolbelt'
 maintainer 'Thomas Orozco <thomas@aptible.com>'
