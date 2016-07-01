@@ -19,6 +19,10 @@ build_iteration 1
 # Creates required build directories
 dependency 'preparation'
 
+override :zlib, source: {
+  url: 'http://pilotfiber.dl.sourceforge.net/project/libpng/zlib/1.2.8/zlib-1.2.8.tar.gz'
+}
+
 # aptible-cli dependencies/components
 override :ruby, version: '2.2.4'
 dependency 'aptible-cli'
