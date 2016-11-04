@@ -3,11 +3,28 @@ set -o errexit
 set -o nounset
 set -o xtrace
 
-# This uses sudo ... $(which)  everywhere to ensure we use the right Ruby
-# despite the fact that Ruby on Travis comes from RVM and isn't necessarily
-# going to be on the PATH.
-sudo "$(which ruby)" "$(which bundle)" install --without development --binstubs /binstubs
-sudo env "DOCKER_TAG=${DOCKER_TAG:-native}" "$(which ruby)" /binstubs/omnibus build aptible-toolbelt
+# Travis uses rvm, which toys with environment variables enough that it's hard
+# to use properly with sudo. So, if rvmsudo is in use, we'll use rvmsudo rather
+# than regular sudo.
+SUDO="sudo"
+if [[ -n "${rvm_path:-}" ]]; then
+  echo "Detected rvm: ${rvm_path}"
+  SUDO="rvmsudo"
+fi
+
+# Since secure_path is set on our CentOS build images, we also need to ensure
+# we only use absolute paths when referencing the binaries we want to run.
+GEM="$(command -v gem)"
+BUNDLE="$(command -v bundle)"
+RUBY="$(command -v ruby)"
+
+echo "Using SUDO=${SUDO}, GEM=${GEM}, BUNDLE=${BUNDLE}, RUBY=${RUBY}"
+
+"$GEM" env
+"$SUDO" "$GEM" env
+
+"$SUDO" "$BUNDLE" install --without development --binstubs /binstubs
+"$SUDO" env "DOCKER_TAG=${DOCKER_TAG:-native}" "$RUBY" /binstubs/omnibus build aptible-toolbelt
 
 # Smoke test
 time /opt/aptible-toolbelt/bin/aptible version
