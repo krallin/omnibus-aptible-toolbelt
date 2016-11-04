@@ -12,19 +12,19 @@ if [[ -n "${rvm_path:-}" ]]; then
   SUDO="rvmsudo"
 fi
 
-echo "Using SUDO=${SUDO}"
+# Since secure_path is set on our CentOS build images, we also need to ensure
+# we only use absolute paths when referencing the binaries we want to run.
+GEM="$(command -v gem)"
+BUNDLE="$(command -v bundle)"
+RUBY="$(command -v ruby)"
 
-echo "gem env"
-gem env
+echo "Using SUDO=${SUDO}, GEM=${GEM}, BUNDLE=${BUNDLE}, RUBY=${RUBY}"
 
-echo "${SUDO} gem env"
-"$SUDO" gem env
+"$GEM" env
+"$SUDO" "$GEM" env
 
-echo "${SUDO} bundle install"
-"$SUDO" bundle install --without development --binstubs /binstubs
-
-echo "${SUDO} build"
-"$SUDO" env "DOCKER_TAG=${DOCKER_TAG:-native}" ruby /binstubs/omnibus build aptible-toolbelt
+"$SUDO" "$BUNDLE" install --without development --binstubs /binstubs
+"$SUDO" env "DOCKER_TAG=${DOCKER_TAG:-native}" "$RUBY" /binstubs/omnibus build aptible-toolbelt
 
 # Smoke test
 time /opt/aptible-toolbelt/bin/aptible version
