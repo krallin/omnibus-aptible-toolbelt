@@ -3,11 +3,28 @@ set -o errexit
 set -o nounset
 set -o xtrace
 
-# This uses sudo ... $(which)  everywhere to ensure we use the right Ruby
-# despite the fact that Ruby on Travis comes from RVM and isn't necessarily
-# going to be on the PATH.
-sudo "$(which ruby)" "$(which bundle)" install --without development --binstubs /binstubs
-sudo env "DOCKER_TAG=${DOCKER_TAG:-native}" "$(which ruby)" /binstubs/omnibus build aptible-toolbelt
+# Travis uses rvm, which toys with environment variables enough that it's hard
+# to use properly with sudo. So, if rvmsudo is in use, we'll use rvmsudo rather
+# than regular sudo.
+SUDO="sudo"
+if [[ -n "${rvm_path:-}" ]]; then
+  echo "Detected rvm: ${rvm_path}"
+  SUDO="rvmsudo"
+fi
+
+echo "Using SUDO=${SUDO}"
+
+echo "gem env"
+gem env
+
+echo "${SUDO} gem env"
+"$SUDO" gem env
+
+echo "${SUDO} bundle install"
+"$SUDO" bundle install --without development --binstubs /binstubs
+
+echo "${SUDO} build"
+"$SUDO" env "DOCKER_TAG=${DOCKER_TAG:-native}" ruby /binstubs/omnibus build aptible-toolbelt
 
 # Smoke test
 time /opt/aptible-toolbelt/bin/aptible version
