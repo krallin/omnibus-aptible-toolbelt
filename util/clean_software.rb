@@ -9,9 +9,9 @@
 # them twice when actually building... but that's the lesser of two evils).
 
 module CleanSoftwareExtension
-  def build_me
+  def build_me(*args)
     fetcher.clean
-    super
+    super(*args)
   end
 end
 
