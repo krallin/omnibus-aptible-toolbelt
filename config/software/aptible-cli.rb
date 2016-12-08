@@ -39,6 +39,7 @@ build do
     File.open(cli_entrypoint, 'w') do |f|
       f.puts('#!/bin/sh')
       vars_to_clear.each { |var| f.puts("unset #{var}") }
+      f.puts(%(export APTIBLE_TOOLBELT="1"))
       f.puts(%(export PATH="#{install_dir}/embedded/bin:$PATH"))
       f.puts(%(exec "#{install_dir}/embedded/bin/aptible" "$@"))
     end
