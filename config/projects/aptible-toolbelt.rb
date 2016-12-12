@@ -26,6 +26,7 @@ override :zlib, source: {
 # aptible-cli dependencies/components
 override :ruby, version: '2.2.4'
 dependency 'aptible-cli'
+dependency 'ssh'
 
 # Version manifest file
 dependency 'version-manifest'
