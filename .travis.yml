@@ -8,6 +8,7 @@ cache:
 matrix:
   include:
     - os: osx
+      rvm: 2.2.4
       env:
         - BUILD_ENGINE=native
     - os: linux
