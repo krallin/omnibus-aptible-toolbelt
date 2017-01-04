@@ -10,7 +10,7 @@
 
 module CleanSoftwareExtension
   def build_me(*args)
-    fetcher.clean
+    #fetcher.clean
     super(*args)
   end
 end
