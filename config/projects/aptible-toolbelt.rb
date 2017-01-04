@@ -24,9 +24,11 @@ override :zlib, source: {
 }
 
 # aptible-cli dependencies/components
-override :ruby, version: '2.2.4'
 dependency 'aptible-cli'
 dependency 'ssh'
+
+override :ruby,     version: '2.3.1'
+override :rubygems, version: '2.4.8'
 
 # Version manifest file
 dependency 'version-manifest'
@@ -37,4 +39,8 @@ exclude '**/bundler/git'
 package :pkg do
   identifier 'com.aptible.toolbelt'
   signing_identity 'Developer ID Installer: Chas Ballew (79J6PXK4K8)'
+end
+
+package :msi do
+  upgrade_code '1C2B85DF-CDE6-4CE4-BDC7-64AF6E0C5796'
 end
