@@ -36,7 +36,7 @@
           <Directory Id="PROJECTLOCATION" Name="$(var.ProjectLocationDir)" >
             <Directory Id="PROJECTLOCATIONBIN" Name="bin" >
               <Component Id="AptibleToolbeltPath" Guid="$(var.AptibleToolbeltPathGuid)" >
-                <Environment Id="AptibleToolbeltPathEnvironment" Name="PATH" Action="set" Part="last" System="yes" Value="[PROJECTLOCATIONBIN]" />
+                <Environment Id="AptibleToolbeltPathEnvironment" Name="PATH" Action="set" Part="first" System="yes" Value="[PROJECTLOCATIONBIN]" />
               </Component>
             </Directory>
           </Directory>
@@ -50,6 +50,9 @@
       <ComponentGroupRef Id="ProjectDir" />
       <ComponentRef Id="AptibleToolbeltPath" />
     </Feature>
+
+    <!-- Notify the system that we're changing the PATH -->
+    <CustomActionRef Id="WixBroadcastEnvironmentChange" />
 
     <!-- UI Stuff -->
     <Icon Id="project.ico" SourceFile="Resources\assets\project_16x16.ico"/>
