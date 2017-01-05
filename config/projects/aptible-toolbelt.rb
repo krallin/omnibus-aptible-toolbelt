@@ -51,4 +51,9 @@ package :msi do
     ProjectLocationDir: project_location_dir,
     AptibleToolbeltPathGuid: '4126FFD9-C230-437B-A102-4B9F29156137'
   )
+
+  # Use WixUtilExtension to support WixBroadcastEnvironmentChange and notify
+  # the system that we're updating an environment variable (the PATH).
+  wix_candle_extension 'WixUtilExtension'
+  wix_light_extension 'WixUtilExtension'
 end
