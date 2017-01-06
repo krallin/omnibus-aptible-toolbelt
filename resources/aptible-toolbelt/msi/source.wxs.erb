@@ -46,7 +46,7 @@
     <SetDirectory Id="WINDOWSVOLUME" Value="[WindowsVolume]" />
 
     <!-- Set the components defined in our fragment files that will be used for our feature  -->
-    <Feature Id="ProjectFeature" Title="!(loc.FeatureMainName)" Absent="disallow" AllowAdvertise="no" Level="1" ConfigurableDirectory="<%= wix_install_dir %>">
+    <Feature Id="ProjectFeature" Title="!(loc.FeatureMainName)" Absent="disallow" AllowAdvertise="no" Level="1">
       <ComponentGroupRef Id="ProjectDir" />
       <ComponentRef Id="AptibleToolbeltPath" />
     </Feature>
@@ -58,7 +58,6 @@
     <Icon Id="project.ico" SourceFile="Resources\assets\project_16x16.ico"/>
     <Property Id="ARPPRODUCTICON" Value="project.ico" />
     <Property Id="ARPHELPLINK" Value="https://www.aptible.com/support/" />
-    <Property Id="WIXUI_INSTALLDIR" Value="<%= wix_install_dir %>" />
 
     <UIRef Id="ProjectUI_InstallDir"/>
     <UI Id="ProjectUI_InstallDir">
