@@ -51,6 +51,11 @@ git config --global user.email "thomas@orozco.fr"
 git config --global user.name "Thomas Orozco"
 ```
 
+Import the code-signing certificate (it's in 1Password under `Microsoft
+Authenticode Signing Key`). To do so, open the p12 file, select import in the
+`Local Machine`, and provide the p12 password (found in 1Password as well). Use
+the certificate manager to confirm the certificate was properly imported.
+
 ### Every time ###
 
 Use an **administrator prompt**, and set up the environment:
