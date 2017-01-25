@@ -1,5 +1,5 @@
 name 'aptible-cli'
-default_version 'v0.8.3'
+default_version 'v0.8.4'
 
 license 'MIT'
 license_file 'LICENSE.md'
@@ -16,7 +16,7 @@ build do
 
   # This installs dependencies, and creates a Gemfile.lock for use by
   # appbundler later.
-  bundle 'install --without development test', env: env
+  bundle 'install --without development test --retry 3', env: env
 
   # Now, we still need to actually install aptible-cli in the embedded package
   gem 'build aptible-cli.gemspec', env: env
