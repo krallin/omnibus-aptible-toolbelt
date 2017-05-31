@@ -1,0 +1,153 @@
+#define UNICODE
+#define _UNICODE
+
+#include <stdio.h>
+#include <string.h>
+#include <windows.h>
+#include <Strsafe.h>
+#include <ctype.h>
+
+#define BINDIR L"<%= bindir %>"
+#define RUBY L"<%= bindir %>\\ruby.exe"
+#define APTIBLE L"<%= bindir %>\\aptible"
+
+#define CMD_BUFFER_SIZE 8192
+#define PATH_BUFFER_SIZE 32768
+
+void printLastError(char *label) {
+  DWORD dLastError = GetLastError();
+  LPCTSTR strErrorMessage = NULL;
+
+  FormatMessage(
+      FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_ARGUMENT_ARRAY | FORMAT_MESSAGE_ALLOCATE_BUFFER,
+      NULL,
+      dLastError,
+      0,
+      (LPWSTR) &strErrorMessage,
+      0,
+      NULL
+      );
+
+  printf("%s: %ls\n", label, strErrorMessage);
+}
+
+int main(void)  {
+  wchar_t *cl = GetCommandLine();
+
+  // Drop the first parameter (program name) from cl. We'll replace
+  // this with two things:
+  //
+  // - Ruby, which will be our new argv[0].
+  // - The path of the aptible ruby script.
+  //
+  // See Wine's implementation of CommandLineToArgvW for where this
+  // parsing comes from.
+
+  if (*cl == '"') {
+    ++cl;
+    while (*cl)
+      if (*cl++ == '"')
+        break;
+  } else {
+    while (*cl && *cl != ' ' && *cl != '\t')
+      ++cl;
+  }
+
+  /* (optionally) skip spaces preceding the first argument */
+  while (*cl == ' ' || *cl == '\t') {
+    cl++;
+  }
+
+  // Now, prepare the new command line
+  wchar_t commandLine[CMD_BUFFER_SIZE];
+
+  if (StringCchCopy(commandLine, CMD_BUFFER_SIZE, RUBY)) {
+    return 1;
+  }
+
+  if (StringCchCat(commandLine, CMD_BUFFER_SIZE, L" ")) {
+    return 1;
+  }
+
+  if (StringCchCat(commandLine, CMD_BUFFER_SIZE, APTIBLE)) {
+    return 1;
+  }
+
+  if (StringCchCat(commandLine, CMD_BUFFER_SIZE, L" ")) {
+    return 1;
+  }
+
+  if (StringCchCat(commandLine, CMD_BUFFER_SIZE, cl)) {
+    return 1;
+  }
+
+  // Prepare the environment
+  // (erb) <% env.each do |k, v| %>
+  if (_wputenv_s(L"<%= k %>", L"<%= v %>")) {
+    return 1;
+  }
+  // (erb) <% end %>
+
+  wchar_t newPath[PATH_BUFFER_SIZE];
+
+  if (StringCchCopy(newPath, PATH_BUFFER_SIZE, BINDIR)) {
+    return 1;
+  }
+
+  if (StringCchCat(newPath, PATH_BUFFER_SIZE, L";")) {
+    return 1;
+  }
+
+  wchar_t *currentPath = _wgetenv(L"PATH");
+  if (currentPath != NULL) {
+    if (StringCchCat(newPath, PATH_BUFFER_SIZE, currentPath)) {
+      return 1;
+    }
+  }
+
+  if (_wputenv_s(L"PATH", newPath)) {
+    return 1;
+  }
+
+  // Finally, spawn the Ruby process
+  STARTUPINFO info={sizeof(info)};
+  PROCESS_INFORMATION processInfo;
+
+  BOOL ok = CreateProcess(
+      RUBY,
+      commandLine,
+      NULL, NULL,
+      TRUE, 0,
+      NULL, NULL,
+      &info, &processInfo
+      );
+
+  if (!ok) {
+    // Oops, Ruby failed to start.
+    printLastError("CreateProcess");
+    return 1;
+  }
+
+  // Good: Ruby started. Wait for it and return an exit code.
+  int exitCode = 1;
+  DWORD rubyExitCode;
+
+  if (WaitForSingleObject(processInfo.hProcess, INFINITE)) {
+    printLastError("WaitForSingleObject");
+    goto done;
+  }
+
+  if (!GetExitCodeProcess(processInfo.hProcess, &rubyExitCode)) {
+    printLastError("GetExitCodeProcess");
+    goto done;
+  }
+
+  if (rubyExitCode == 0) {
+    exitCode = 0;
+  }
+
+done:
+  CloseHandle(processInfo.hProcess);
+  CloseHandle(processInfo.hThread);
+  return exitCode;
+}
