@@ -35,6 +35,9 @@ MSI tools and the SDK:
 https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk
 ```
 
+Visual Studio Community Edition 2017, install the "Desktop Development with
+C++" and Windows 8.1 SDK components.
+
 Preparation
 -----------
 

@@ -25,6 +25,7 @@ override :zlib, source: {
 
 # aptible-cli dependencies/components
 dependency 'aptible-cli'
+dependency 'aptible-cli-entrypoint'
 dependency 'ssh'
 
 override :ruby,     version: '2.3.1'
