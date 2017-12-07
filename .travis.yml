@@ -1,10 +1,6 @@
 sudo: true
 language: ruby
 install: true
-cache:
-  - bundler
-  - directories:
-    - .local/cache
 matrix:
   include:
     - os: osx
