@@ -4,6 +4,7 @@ install: true
 matrix:
   include:
     - os: osx
+      osx_image: xcode8
       rvm: 2.2.4
       env:
         - BUILD_ENGINE=native
