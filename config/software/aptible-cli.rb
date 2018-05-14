@@ -8,7 +8,6 @@ source git: 'https://github.com/aptible/aptible-cli.git'
 
 dependency 'ruby'
 dependency 'rubygems'
-dependency 'appbundler'
 dependency 'bundler'
 
 build do
@@ -23,5 +22,6 @@ build do
   gem 'install ./aptible-cli-*.gem --local --no-ri --no-rdoc', env: env
 
   # Now, create an aptible-cli binstub
+  gem 'install appbundler --version 0.10.0 --no-ri --no-rdoc'
   command "appbundler . '#{install_dir}/embedded/bin' aptible-cli", env: env
 end
