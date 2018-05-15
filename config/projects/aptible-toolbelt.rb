@@ -19,8 +19,14 @@ build_iteration 1
 # Creates required build directories
 dependency 'preparation'
 
+# https://github.com/chef/omnibus-software/issues/695
 override :zlib, source: {
   url: 'http://pilotfiber.dl.sourceforge.net/project/libpng/zlib/1.2.8/zlib-1.2.8.tar.gz'
+}
+
+# Don't use FTP. Travis blocks that traffic.
+override :libffi, source: {
+  url: 'http://sourceware.org/pub/libffi/libffi-3.2.1.tar.gz'
 }
 
 # aptible-cli dependencies/components

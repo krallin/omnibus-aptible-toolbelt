@@ -22,6 +22,6 @@ build do
   gem 'install ./aptible-cli-*.gem --local --no-ri --no-rdoc', env: env
 
   # Now, create an aptible-cli binstub
-  gem 'install appbundler --version 0.10.0 --no-ri --no-rdoc'
+  gem 'install appbundler --version 0.10.0 --no-ri --no-rdoc', env: env
   command "appbundler . '#{install_dir}/embedded/bin' aptible-cli", env: env
 end
